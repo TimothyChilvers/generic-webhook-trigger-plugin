@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.gwt;
 
+import static java.util.logging.Level.FINE;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.jenkinsci.plugins.gwt.ParameterActionUtil.createParameterAction;
 import static org.jenkinsci.plugins.gwt.Renderer.isMatching;
@@ -18,6 +19,8 @@ import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jenkins.model.ParameterizedJobMixIn;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.gwt.global.CredentialsHelper;
@@ -28,6 +31,8 @@ import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
 public class GenericTrigger extends Trigger<Job<?, ?>> {
+  private static final Logger LOGGER =
+  Logger.getLogger(GenericTrigger.class.getName());
 
   private List<GenericVariable> genericVariables = newArrayList();
   private String regexpFilterText;
@@ -201,9 +206,10 @@ public class GenericTrigger extends Trigger<Job<?, ?>> {
                 this.shouldNotFlattern)
             .getVariables();
 
+    LOGGER.log(FINE, "Variables:\n" + resolvedVariables.toString());
     final String renderedRegexpFilterText = renderText(this.regexpFilterText, resolvedVariables);
     final boolean isMatching = isMatching(renderedRegexpFilterText, this.regexpFilterExpression);
-
+    LOGGER.log(FINE, "Regex: " + renderedRegexpFilterText + (isMatching ? " matched" : " did not match"));
     hudson.model.Queue.Item item = null;
     if (isMatching) {
       final String cause = renderText(this.causeString, resolvedVariables);

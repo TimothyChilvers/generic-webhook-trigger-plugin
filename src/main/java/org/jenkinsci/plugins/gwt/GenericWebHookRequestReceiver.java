@@ -176,7 +176,7 @@ public class GenericWebHookRequestReceiver extends CrumbExclusion implements Unp
     boolean errors = false;
     for (final FoundJob foundJob : foundJobs) {
       try {
-        LOGGER.log(FINE, "Triggering " + foundJob.getFullName());
+        LOGGER.log(FINE, "Assessing payload against job " + foundJob.getFullName());
         LOGGER.log(FINE, " with:\n\n" + postContent + "\n\n");
         final GenericTrigger genericTrigger = foundJob.getGenericTrigger();
 
